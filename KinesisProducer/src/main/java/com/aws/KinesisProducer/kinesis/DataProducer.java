@@ -45,7 +45,7 @@ public class DataProducer {
 	         */
 	        AWSCredentialsProvider credentialsProvider = null;
 	        try {
-	            credentialsProvider = new ProfileCredentialsProvider("Admin");
+	            credentialsProvider = new ProfileCredentialsProvider("dellAdmin");
 	        	//credentialsProvider = new DefaultAWSCredentialsProviderChain();
 	        } catch (Exception e) {
 	            throw new AmazonClientException(
