@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.kinesis.producer.KinesisProducer;
 import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
 import com.amazonaws.services.kinesis.producer.UserRecordFailedException;
@@ -28,29 +31,50 @@ public class DataProducer {
 	@Value(value = "${aws_stream_name}")
 	private String awsStreamName;
 
-	@Value(value = "${aws_access_key}")
-	private String awsAcsessKey;
-
-	@Value(value = "${aws_secret_key}")
-	private String awsSecretKey;
-
 	@Value(value = "${aws_region}")
 	private String awsRegion;
 
 	private KinesisProducer kinesisProducer = null;
 
 	private final AtomicLong recordsPut = new AtomicLong(0);
+	
+	 public static AWSCredentialsProvider getCredentialsProvider() throws Exception {
+	        /*
+	         * The ProfileCredentialsProvider will return your [default] credential profile by
+	         * reading from the credentials file located at (~/.aws/credentials).
+	         */
+	        AWSCredentialsProvider credentialsProvider = null;
+	        try {
+	            credentialsProvider = new ProfileCredentialsProvider("Admin");
+	        	//credentialsProvider = new DefaultAWSCredentialsProviderChain();
+	        } catch (Exception e) {
+	            throw new AmazonClientException(
+	                    "Cannot load the credentials from the credential profiles file. " +
+	                    "Please make sure that your credentials file is at the correct " +
+	                    "location (~/.aws/credentials), and is in valid format.",
+	                    e);
+	        }
+	        return credentialsProvider;
+	    }
 
 	public KinesisProducer getKinesisProducer() {
 		if (kinesisProducer == null) {
+			try {
 			KinesisProducerConfiguration config = new KinesisProducerConfiguration();
 			config.setRegion(awsRegion);
-			BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAcsessKey, awsSecretKey);
-			config.setCredentialsProvider(new AWSStaticCredentialsProvider(awsCreds));
+			//BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAcsessKey, awsSecretKey);
+			AWSCredentialsProvider awsCreds = getCredentialsProvider();
+			//config.setCredentialsProvider(new AWSStaticCredentialsProvider(awsCreds));
+			config.setCredentialsProvider(awsCreds);
 			config.setMaxConnections(1);
 			config.setRequestTimeout(6000); // 6 seconds
 			config.setRecordMaxBufferedTime(5000);// 5 seconds
 			kinesisProducer = new KinesisProducer(config);
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 		return kinesisProducer;
