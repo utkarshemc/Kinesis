@@ -13,6 +13,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.kinesis.producer.KinesisProducer;
 import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
@@ -45,8 +46,8 @@ public class DataProducer {
 	         */
 	        AWSCredentialsProvider credentialsProvider = null;
 	        try {
-	            credentialsProvider = new ProfileCredentialsProvider("dellAdmin");
-	        	//credentialsProvider = new DefaultAWSCredentialsProviderChain();
+	            //credentialsProvider = new ProfileCredentialsProvider("dellAdmin");
+	        	credentialsProvider = new DefaultAWSCredentialsProviderChain();
 	        } catch (Exception e) {
 	            throw new AmazonClientException(
 	                    "Cannot load the credentials from the credential profiles file. " +
