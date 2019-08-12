@@ -121,7 +121,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>inesisConsumer</finalName>
+		<finalName>KinesisConsumer</finalName>
 	</build>
 
 </project>
