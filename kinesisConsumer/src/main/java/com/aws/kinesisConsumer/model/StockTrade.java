@@ -77,5 +77,13 @@ public class StockTrade {
             return null;
         }
     }
+	 public byte[] toJsonAsBytes() {
+	        try {
+	            return JSON.writeValueAsBytes(this);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	    }
 
 }

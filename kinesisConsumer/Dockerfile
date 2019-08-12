@@ -1,4 +1,4 @@
 FROM openjdk:8-jdk-alpine
-ADD target/KinesisConsumer.jar KinesisConsumer.jar
+ADD target/kinesisConsumer.jar kinesisConsumer.jar
 EXPOSE 8082
-ENTRYPOINT ["java","-jar","/KinesisConsumer.jar"]
+ENTRYPOINT ["java","-jar","/kinesisConsumer.jar"]
